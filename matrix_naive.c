@@ -1,49 +1,53 @@
 #include "matrix.h"
 #include <stdlib.h>
 
-struct naive_priv {
-    float values[4][4];
-};
-
-#define PRIV(x) \
-    ((struct naive_priv *) ((x)->priv))
-
-static void assign(Matrix *thiz, Mat4x4 data)
+static Matrix *create(int row, int col)
 {
-    /* FIXME: don't hardcode row & col */
-    thiz->row = thiz->col = 4;
+    Matrix *s = (Matrix *) malloc(sizeof(Matrix));
+    s->row = row;
+    s->col = col;
+    s->priv = (float **) malloc(row * sizeof(float));
+    for(int i = 0; i < row; i++)
+        s->priv[i] = (float *) malloc(col * sizeof(float));
+    return s;
+}
 
-    thiz->priv = malloc(4 * 4 * sizeof(float));
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
-            PRIV(thiz)->values[i][j] = data.values[i][j];
+static bool assign(Matrix *thiz, float **data, int row, int col )
+{
+    if(thiz->row != row || thiz->col != col) return false;
+    for (int i = 0; i < thiz->row; i++)
+        for (int j = 0; j < thiz->col; j++)
+            thiz->priv[i][j] = *((float *) data + i * col + j);
+    return true;
 }
 
 static const float epsilon = 1 / 10000.0;
 
 static bool equal(const Matrix *l, const Matrix *r)
 {
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
-            if (PRIV(l)->values[i][j] + epsilon < PRIV(r)->values[i][j] ||
-                    PRIV(r)->values[i][j] + epsilon < PRIV(l)->values[i][j])
+    if(l->row != r->row || l->col != l->col) return false;
+    for (int i = 0; i < l->row; i++)
+        for (int j = 0; j < l->col; j++)
+            if (l->priv[i][j] + epsilon < r->priv[i][j] ||
+                    r->priv[i][j] + epsilon < l->priv[i][j])
                 return false;
     return true;
 }
 
-bool mul(Matrix *dst, const Matrix *l, const Matrix *r)
+static Matrix *mul(const Matrix *l, const Matrix *r)
 {
-    /* FIXME: error hanlding */
-    dst->priv = malloc(4 * 4 * sizeof(float));
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
-            for (int k = 0; k < 4; k++)
-                PRIV(dst)->values[i][j] += PRIV(l)->values[i][k] *
-                                           PRIV(r)->values[k][j];
-    return true;
+    if(l->col != r->row) return false;
+    Matrix *dst = create(l->row, r->col);
+    for (int i = 0; i < l->row; i++)
+        for (int j = 0; j < r->col; j++)
+            for (int k = 0; k < r->row; k++)
+                dst->priv[i][j] += l->priv[i][k] *
+                                   r->priv[k][j];
+    return dst;
 }
 
 MatrixAlgo NaiveMatrixProvider = {
+    .create = create,
     .assign = assign,
     .equal = equal,
     .mul = mul,

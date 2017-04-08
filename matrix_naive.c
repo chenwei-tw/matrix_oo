@@ -12,12 +12,13 @@ static Matrix *create(int row, int col)
     return s;
 }
 
-static bool assign(Matrix *thiz, float **data, int row, int col )
+static bool assign(Matrix **thiz, float **data, int row, int col )
 {
-    if(thiz->row != row || thiz->col != col) return false;
-    for (int i = 0; i < thiz->row; i++)
-        for (int j = 0; j < thiz->col; j++)
-            thiz->priv[i][j] = *((float *) data + i * col + j);
+    //if(thiz->row != row || thiz->col != col) return false;
+    (*thiz) = create(row, col);
+    for (int i = 0; i < row; i++)
+        for (int j = 0; j < col; j++)
+            (*thiz)->priv[i][j] = *((float *) data + i * col + j);
     return true;
 }
 

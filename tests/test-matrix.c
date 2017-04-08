@@ -26,17 +26,17 @@ int main()
     };
 
     /* m: 4x3 */
-    m = algo->create(4, 3);
-    algo->assign(m, (float **) a, 4, 3);
+    //m = algo->create(4, 3);
+    algo->assign(&m, (float **) a, 4, 3);
 
     /* n: 3x4 */
-    n = algo->create(3, 4);
-    algo->assign(n, (float **) b, 3, 4);
+    //n = algo->create(3, 4);
+    algo->assign(&n, (float **) b, 3, 4);
 
     dst = algo->mul(m, n);
 
-    fixed = algo->create(4, 4);
-    algo->assign(fixed, (float **) c, 4, 4);
+    //fixed = algo->create(4, 4);
+    algo->assign(&fixed, (float **) c, 4, 4);
 
     if (algo->equal(dst, fixed))
         return 0;

@@ -10,7 +10,7 @@ typedef struct {
 
 typedef struct {
     Matrix *(*create)(int row, int col);
-    bool (*assign)(Matrix *thiz, float **data, int row, int col);
+    bool (*assign)(Matrix **thiz, float **data, int row, int col);
     bool (*equal)(const Matrix *l, const Matrix *r);
     Matrix *(*mul)(const Matrix *l, const Matrix *r);
 } MatrixAlgo;

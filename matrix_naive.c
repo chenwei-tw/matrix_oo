@@ -2,29 +2,36 @@
 #include <stdlib.h>
 
 struct naive_priv {
-    int values[4][4];
+    int **values;
 };
 
 #define PRIV(x) \
     ((struct naive_priv *) ((x)->priv))
 
-static void assign(Matrix *thiz, Mat4x4 data)
+static Matrix *create(int size)
 {
-    /* FIXME: don't hardcode row & col */
-    thiz->row = thiz->col = 4;
-
-    thiz->priv = malloc(4 * 4 * sizeof(int));
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
-            PRIV(thiz)->values[i][j] = data.values[i][j];
+    Matrix *m = (Matrix *) malloc(sizeof(Matrix));
+    m->size = size;
+    m->priv = malloc(sizeof(struct naive_priv));
+    PRIV(m)->values = (int **) malloc(size * sizeof(int *));
+    for (int i = 0; i < size; i++)
+        PRIV(m)->values[i] = (int *) malloc(size * sizeof(int));
+    return m;
 }
 
-static const float epsilon = 1 / 10000.0;
+static void assign(Matrix *thiz, int *data)
+{
+    int size = thiz->size;
+    for (int i = 0; i < size; i++)
+        for (int j = 0; j < size; j++)
+            PRIV(thiz)->values[i][j] = *(data + i * size + j);
+}
 
 static bool equal(const Matrix *l, const Matrix *r)
 {
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
+    int size = l->size;
+    for (int i = 0; i < size; i++)
+        for (int j = 0; j < size; j++)
             if (PRIV(l)->values[i][j] != PRIV(r)->values[i][j])
                 return false;
     return true;
@@ -32,17 +39,18 @@ static bool equal(const Matrix *l, const Matrix *r)
 
 bool mul(Matrix *dst, const Matrix *l, const Matrix *r)
 {
-    /* FIXME: error hanlding */
-    dst->priv = malloc(4 * 4 * sizeof(int));
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
-            for (int k = 0; k < 4; k++)
+    int size = l->size;
+    if(l->size != r->size) return false;
+    for (int i = 0; i < size; i++)
+        for (int j = 0; j < size; j++)
+            for (int k = 0; k < size; k++)
                 PRIV(dst)->values[i][j] += PRIV(l)->values[i][k] *
                                            PRIV(r)->values[k][j];
     return true;
 }
 
 MatrixAlgo NaiveMatrixProvider = {
+    .create = create,
     .assign = assign,
     .equal = equal,
     .mul = mul,

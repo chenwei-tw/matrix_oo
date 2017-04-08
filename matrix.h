@@ -3,19 +3,14 @@
 
 #include <stdbool.h>
 
-/* predefined shortcut */
-#define DECLARE_MATRIX(col, row) \
-    typedef struct { int values[col][row]; } Mat ## col ## x ## row
-DECLARE_MATRIX(3, 3);
-DECLARE_MATRIX(4, 4);
-
 typedef struct {
-    int row, col;
+    int size;
     void *priv;
 } Matrix;
 
 typedef struct {
-    void (*assign)(Matrix *thiz, Mat4x4);
+    Matrix *(*create)(int size);
+    void (*assign)(Matrix *thiz, int *data);
     bool (*equal)(const Matrix *l, const Matrix *r);
     bool (*mul)(Matrix *dst, const Matrix *l, const Matrix *r);
 } MatrixAlgo;

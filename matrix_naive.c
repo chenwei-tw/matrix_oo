@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 struct naive_priv {
-    float values[4][4];
+    int values[4][4];
 };
 
 #define PRIV(x) \
@@ -13,7 +13,7 @@ static void assign(Matrix *thiz, Mat4x4 data)
     /* FIXME: don't hardcode row & col */
     thiz->row = thiz->col = 4;
 
-    thiz->priv = malloc(4 * 4 * sizeof(float));
+    thiz->priv = malloc(4 * 4 * sizeof(int));
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
             PRIV(thiz)->values[i][j] = data.values[i][j];
@@ -25,8 +25,7 @@ static bool equal(const Matrix *l, const Matrix *r)
 {
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
-            if (PRIV(l)->values[i][j] + epsilon < PRIV(r)->values[i][j] ||
-                    PRIV(r)->values[i][j] + epsilon < PRIV(l)->values[i][j])
+            if (PRIV(l)->values[i][j] != PRIV(r)->values[i][j])
                 return false;
     return true;
 }
@@ -34,7 +33,7 @@ static bool equal(const Matrix *l, const Matrix *r)
 bool mul(Matrix *dst, const Matrix *l, const Matrix *r)
 {
     /* FIXME: error hanlding */
-    dst->priv = malloc(4 * 4 * sizeof(float));
+    dst->priv = malloc(4 * 4 * sizeof(int));
     for (int i = 0; i < 4; i++)
         for (int j = 0; j < 4; j++)
             for (int k = 0; k < 4; k++)

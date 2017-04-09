@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 struct naive_priv {
-    int *values;
+    int **values;
 };
 
 #define PRIV(x) \
@@ -14,7 +14,9 @@ static Matrix *create(int row, int col)
     m->row = row;
     m->col = col;
     m->priv = malloc(sizeof(struct naive_priv));
-    PRIV(m)->values = (int *) calloc(row * col, sizeof(int));
+    PRIV(m)->values = (int **) malloc(row * sizeof(int *));
+    for(int i = 0; i < row; i++)
+        PRIV(m)->values[i] = (int *) calloc(col, sizeof(int));
     return m;
 }
 
@@ -22,7 +24,7 @@ static void assign(Matrix *thiz, int *data)
 {
     for (int i = 0; i < thiz->row; i++)
         for (int j = 0; j < thiz->col; j++)
-            PRIV(thiz)->values[i * thiz->col + j] =
+            PRIV(thiz)->values[i][j] =
                 *(data + i * thiz->col + j);
 }
 
@@ -31,8 +33,7 @@ static bool equal(const Matrix *l, const Matrix *r)
     if (l->col != r->col || l->row != r->row) return false;
     for (int i = 0; i < l->row; i++)
         for (int j = 0; j < l->col; j ++)
-            if (PRIV(l)->values[i * l->col + j] != \
-                    PRIV(r)->values[i * r->col + j])
+            if (PRIV(l)->values[i][j] != PRIV(r)->values[i][j])
                 return false;
     return true;
 }
@@ -44,9 +45,9 @@ bool mul(Matrix **dst, const Matrix *l, const Matrix *r)
     for (int i = 0; i < l->row; i++)
         for (int j = 0; j < r->col; j++)
             for (int k = 0; k < l->col; k++)
-                PRIV(*dst)->values[i * (*dst)->col + j] += \
-                        PRIV(l)->values[i * l->col + k] * \
-                        PRIV(r)->values[k * r->col + j];
+                PRIV(*dst)->values[i][j] +=
+                    PRIV(l)->values[i][k] *
+                    PRIV(r)->values[k][j];
     return true;
 }
 

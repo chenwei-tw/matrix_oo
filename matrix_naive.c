@@ -38,7 +38,7 @@ static bool equal(const Matrix *l, const Matrix *r)
     return true;
 }
 
-bool mul(Matrix **dst, const Matrix *l, const Matrix *r)
+static bool mul(Matrix **dst, const Matrix *l, const Matrix *r)
 {
     if(l->col != r->row) return false;
     (*dst) = create(l->row, r->col);
@@ -46,8 +46,7 @@ bool mul(Matrix **dst, const Matrix *l, const Matrix *r)
         for (int j = 0; j < r->col; j++)
             for (int k = 0; k < l->col; k++)
                 PRIV(*dst)->values[i][j] +=
-                    PRIV(l)->values[i][k] *
-                    PRIV(r)->values[k][j];
+                    PRIV(l)->values[i][k] * PRIV(r)->values[k][j];
     return true;
 }
 

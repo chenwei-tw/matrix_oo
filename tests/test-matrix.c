@@ -3,11 +3,12 @@
 
 MatrixAlgo *matrix_providers[] = {
     &NaiveMatrixProvider,
+    &SSEMatrixProvider,
 };
 
 int main()
 {
-    MatrixAlgo *algo = matrix_providers[0];
+    MatrixAlgo *algo = matrix_providers[1];
 
     Matrix *dst, *m, *n, *fixed;
 
@@ -26,7 +27,6 @@ int main()
         1, 2, 3, 4
     });
 
-    //dst = algo->create(m->row, n->col);
     algo->mul(&dst, m, n);
 
     fixed = algo->create(4, 4);

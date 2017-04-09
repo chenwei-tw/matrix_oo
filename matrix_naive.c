@@ -8,40 +8,45 @@ struct naive_priv {
 #define PRIV(x) \
     ((struct naive_priv *) ((x)->priv))
 
-static Matrix *create(int size)
+static Matrix *create(int row, int col)
 {
     Matrix *m = (Matrix *) malloc(sizeof(Matrix));
-    m->size = size;
+    m->row = row;
+    m->col = col;
     m->priv = malloc(sizeof(struct naive_priv));
-    PRIV(m)->values = (int *) malloc(size * size * sizeof(int));
+    PRIV(m)->values = (int *) calloc(row * col, sizeof(int));
     return m;
 }
 
 static void assign(Matrix *thiz, int *data)
 {
-    int size = thiz->size;
-    for (int i = 0; i < size * size; i++)
-        PRIV(thiz)->values[i] = *(data + i);
+    for (int i = 0; i < thiz->row; i++)
+        for (int j = 0; j < thiz->col; j++)
+            PRIV(thiz)->values[i * thiz->col + j] =
+                *(data + i * thiz->col + j);
 }
 
 static bool equal(const Matrix *l, const Matrix *r)
 {
-    int size = l->size;
-    for (int i = 0; i < size * size; i++)
-        if (PRIV(l)->values[i] != PRIV(r)->values[i])
-            return false;
+    if (l->col != r->col || l->row != r->row) return false;
+    for (int i = 0; i < l->row; i++)
+        for (int j = 0; j < l->col; j ++)
+            if (PRIV(l)->values[i * l->col + j] != \
+                    PRIV(r)->values[i * r->col + j])
+                return false;
     return true;
 }
 
-bool mul(Matrix *dst, const Matrix *l, const Matrix *r)
+bool mul(Matrix **dst, const Matrix *l, const Matrix *r)
 {
-    int size = l->size;
-    if(l->size != r->size) return false;
-    for (int i = 0; i < size; i++)
-        for (int j = 0; j < size; j++)
-            for (int k = 0; k < size; k++)
-                PRIV(dst)->values[i * size + j] += PRIV(l)->values[i * size + k] *
-                                                   PRIV(r)->values[k * size + j];
+    if(l->col != r->row) return false;
+    (*dst) = create(l->row, r->col);
+    for (int i = 0; i < l->row; i++)
+        for (int j = 0; j < r->col; j++)
+            for (int k = 0; k < l->col; k++)
+                PRIV(*dst)->values[i * (*dst)->col + j] += \
+                        PRIV(l)->values[i * l->col + k] * \
+                        PRIV(r)->values[k * r->col + j];
     return true;
 }
 

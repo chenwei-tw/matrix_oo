@@ -11,31 +11,30 @@ int main()
 
     Matrix *dst, *m, *n, *fixed;
 
-    m = algo->create(4);
+    m = algo->create(4, 3);
     algo->assign(m, (int []) {
-        1, 2, 3, 4,
-        5, 6, 7, 8,
-        1, 2, 3, 4,
-        5, 6, 7, 8
+        1, 2, 3,
+        5, 6, 7,
+        1, 2, 3,
+        5, 6, 7,
     });
 
-    n = algo->create(4);
+    n = algo->create(3, 4);
     algo->assign(n, (int []) {
         1, 2, 3, 4,
         5, 6, 7, 8,
-        1, 2, 3, 4,
-        5, 6, 7, 8
+        1, 2, 3, 4
     });
 
-    dst = algo->create(4);
-    algo->mul(dst, m, n);
+    //dst = algo->create(m->row, n->col);
+    algo->mul(&dst, m, n);
 
-    fixed = algo->create(4);
+    fixed = algo->create(4, 4);
     algo->assign(fixed, (int []) {
-        34, 44, 54, 64,
-        82, 108, 134, 160,
-        34, 44, 54, 64,
-        82, 108, 134, 160
+        14, 20, 26, 32,
+        42, 60, 78, 96,
+        14, 20, 26, 32,
+        42, 60, 78, 96
     });
 
     if (algo->equal(dst, fixed))

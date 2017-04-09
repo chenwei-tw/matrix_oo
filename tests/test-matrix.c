@@ -10,36 +10,33 @@ int main()
     MatrixAlgo *algo = matrix_providers[0];
 
     Matrix *dst, *m, *n, *fixed;
-    int a[4][4] = {
-        { 1, 2, 3, 4, },
-        { 5, 6, 7, 8, },
-        { 1, 2, 3, 4, },
-        { 5, 6, 7, 8, },
-    };
-    int b[4][4] = {
-        { 1, 2, 3, 4, },
-        { 5, 6, 7, 8, },
-        { 1, 2, 3, 4, },
-        { 5, 6, 7, 8, },
-    };
-    int c[4][4] = {
-        { 34,  44,  54,  64, },
-        { 82, 108, 134, 160, },
-        { 34,  44,  54,  64, },
-        { 82, 108, 134, 160, },
-    };
 
     m = algo->create(4);
-    algo->assign(m, (int *) a);
+    algo->assign(m, (int []) {
+        1, 2, 3, 4,
+        5, 6, 7, 8,
+        1, 2, 3, 4,
+        5, 6, 7, 8
+    });
 
     n = algo->create(4);
-    algo->assign(n, (int *) b);
+    algo->assign(n, (int []) {
+        1, 2, 3, 4,
+        5, 6, 7, 8,
+        1, 2, 3, 4,
+        5, 6, 7, 8
+    });
 
     dst = algo->create(4);
     algo->mul(dst, m, n);
 
     fixed = algo->create(4);
-    algo->assign(fixed, (int *) c);
+    algo->assign(fixed, (int []) {
+        34, 44, 54, 64,
+        82, 108, 134, 160,
+        34, 44, 54, 64,
+        82, 108, 134, 160
+    });
 
     if (algo->equal(dst, fixed))
         return 0;

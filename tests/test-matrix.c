@@ -6,11 +6,12 @@ MatrixAlgo *matrix_providers[] = {
     &SSEMatrixProvider,
     &prefetchSSEMatrixProvider,
     &AVXMatrixProvider,
+    &prefetchAVXMatrixProvider,
 };
 
 int main()
 {
-    MatrixAlgo *algo = matrix_providers[1];
+    MatrixAlgo *algo = matrix_providers[4];
 
     Matrix *dst, *m, *n, *fixed;
 

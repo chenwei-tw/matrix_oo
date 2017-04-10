@@ -25,5 +25,6 @@ extern MatrixAlgo NaiveMatrixProvider;
 extern MatrixAlgo SSEMatrixProvider;
 extern MatrixAlgo prefetchSSEMatrixProvider;
 extern MatrixAlgo AVXMatrixProvider;
+extern MatrixAlgo prefetchAVXMatrixProvider;
 
 #endif /* MATRIX_H_ */

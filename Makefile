@@ -12,13 +12,14 @@ $(GIT_HOOKS):
 	@echo
 
 CC ?= gcc
-CFLAGS = -Wall -std=gnu99 -g -msse4.1 -O0 -I.
+CFLAGS = -Wall -std=gnu99 -g -msse4.1 -mavx -mavx2 -O0 -I.
 LDFLAGS = -lpthread
 
 OBJS := \
 	stopwatch.o \
 	matrix_naive.o \
-	matrix_sse.o
+	matrix_sse.o \
+	matrix_avx.o
 
 deps := $(OBJS:%.o=%.o.d)
 OBJS := $(addprefix $(OUT)/,$(OBJS))

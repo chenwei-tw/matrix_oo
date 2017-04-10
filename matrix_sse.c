@@ -48,7 +48,7 @@ static bool sse_mul(Matrix **dst, const Matrix *l, const Matrix *r)
     int src1_h = (l->row % 4 == 0) ? l->row : l->row + (4 - l->row % 4);
     int src2_w = (r->col % 4 == 0) ? r->col : r->col + (4 - r->col % 4);
     /* src1: l, src2: r */
-    (*dst) = create(src1_h, src2_w);
+    (*dst) = create(l->row, r->col);
 
     for (int i = 0; i < src1_h; i += 4) {
         for (int j = 0; j < src2_w; j+= 4) {
@@ -170,7 +170,7 @@ static bool sse_prefetch_mul(Matrix **dst, const Matrix *l, const Matrix *r)
     int src1_h = (l->row % 4 == 0) ? l->row : l->row + (4 - l->row % 4);
     int src2_w = (r->col % 4 == 0) ? r->col : r->col + (4 - r->col % 4);
     /* src1: l, src2: r */
-    (*dst) = create(src1_h, src2_w);
+    (*dst) = create(l->row, r->col);
 
     for (int i = 0; i < src1_h; i += 4) {
         for (int j = 0; j < src2_w; j+= 4) {

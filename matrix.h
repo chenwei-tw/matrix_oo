@@ -17,11 +17,13 @@ typedef struct {
     void (*assign)(Matrix *thiz, int *data);
     bool (*equal)(const Matrix *l, const Matrix *r);
     bool (*mul)(Matrix **dst, const Matrix *l, const Matrix *r);
+    void (*display)(Matrix *thiz);
 } MatrixAlgo;
 
 /* Available matrix providers */
 extern MatrixAlgo NaiveMatrixProvider;
 extern MatrixAlgo SSEMatrixProvider;
 extern MatrixAlgo prefetchSSEMatrixProvider;
+extern MatrixAlgo AVXMatrixProvider;
 
 #endif /* MATRIX_H_ */

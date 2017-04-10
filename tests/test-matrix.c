@@ -4,11 +4,12 @@
 MatrixAlgo *matrix_providers[] = {
     &NaiveMatrixProvider,
     &SSEMatrixProvider,
+    &prefetchSSEMatrixProvider,
 };
 
 int main()
 {
-    MatrixAlgo *algo = matrix_providers[1];
+    MatrixAlgo *algo = matrix_providers[2];
 
     Matrix *dst, *m, *n, *fixed;
 

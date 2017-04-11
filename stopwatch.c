@@ -95,7 +95,7 @@ double read(watch_p Q)
         Q->total = time_add(Q->total, time_diff(Q->last_time, t));
         Q->last_time = t;
     }
-    return (Q->total.tv_sec * 1000000.0 + Q->total.tv_nsec / 1000.0) / 1000000.0;
+    return (Q->total.tv_sec * 1000000.0 + Q->total.tv_nsec / 1000.0) / 1000.0;
 }
 
 /* API gateway */

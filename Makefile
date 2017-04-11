@@ -1,6 +1,7 @@
 EXEC = \
     tests/test-matrix \
-    tests/test-stopwatch
+    tests/test-stopwatch \
+	tests/stat-matrix
 
 GIT_HOOKS := .git/hooks/applied
 OUT ?= .build
@@ -28,11 +29,20 @@ deps := $(addprefix $(OUT)/,$(deps))
 tests/test-%: $(OBJS) tests/test-%.c
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
+tests/stat-%: $(OBJS) tests/stat-%.c
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
 $(OUT)/%.o: %.c $(OUT)
 	$(CC) $(CFLAGS) -c -o $@ -MMD -MF $@.d $<
 
 $(OUT):
 	@mkdir -p $@
+
+data.csv: tests/stat-matrix
+	./tests/stat-matrix
+
+plot: data.csv
+	gnuplot scripts/runtime.gp
 
 check: $(EXEC)
 	@for test in $^ ; \
@@ -42,6 +52,6 @@ check: $(EXEC)
 
 clean:
 	$(RM) $(EXEC) $(OBJS) $(deps)
-	@rm -rf $(OUT)
+	@rm -rf $(OUT) *.csv *.png
 
 -include $(deps)
